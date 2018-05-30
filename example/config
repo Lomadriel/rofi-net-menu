@@ -1,0 +1,30 @@
+[launcher]
+## Theme of the rofi menu
+theme = ~/.config/rofi/sidetab.rasi
+
+## Makes searches case-insensitive
+# case_insensitive = True
+
+## Hides the password
+# hide_password = True
+
+[general]
+## Default wifi device to use
+# default_wifi_device =
+
+## Print wifi access points in the menu
+# print_wifi = True
+
+## Default ethernet device to use
+# default_ethernet_device = enp4s0
+
+## Print internet connection in menu
+print_ethernet = True
+
+## Store password only for the current user
+# user_local_password = True
+
+## Print config items (disable networking, disable wifi, ...)
+# print_config_menu = True
+
+
