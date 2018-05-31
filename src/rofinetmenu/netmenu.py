@@ -45,9 +45,9 @@ class Config:
         return None
 
     def get_launcher_cmd(self):
-        return self.cmd
+        return list(self.cmd)
 
-    def __read_config(self, path=None, extra_config_args=None): # TODO: Take extra args in account
+    def __read_config(self, path=None, extra_config_args=None):  # TODO: Take extra args in account
         self.cmd = []
         self.cmd.extend(['rofi', '-dmenu'])
 
@@ -171,11 +171,17 @@ class EthernetEntriesGenerator(AbstractEntriesGenerator):
 
         active_connection = self.device.get_active_connection()
 
-        entries = [MenuEntry(connection.get_id(),
-                             self.process_entry, args=[connection, connection == active_connection])
-                   for connection in connections if self.is_valid_connection(connection)]
+        entries = []
+        active_lines = []
+        for connection in connections:
+            if self.is_valid_connection(connection):
+                is_active = connection == active_connection
+                entries.append(MenuEntry(connection.get_id(),
+                                         self.process_entry, args=[connection, is_active]))
+                if connection == active_connection:
+                    active_lines.append(len(entries) - 1)
 
-        return entries, [len(entries) - 1]
+        return entries, active_lines
 
     def process_entry(self, selection, is_active):
         if is_active:
@@ -231,6 +237,8 @@ class WifiEntriesGenerator(AbstractEntriesGenerator):
 
     def get_passphrase(self):
         cmd = self.config.get_launcher_cmd()
+        cmd.extend(['-p', 'Password', '-l', '0'])
+
         if self.config.hide_password:
             cmd.append('-password')
 
@@ -449,6 +457,7 @@ class NetworkMenu:
 
     def get_user_selection(self, actions, active_lines):
         command = self.config.get_launcher_cmd()
+        command.extend(['-p', 'Network'])
 
         if active_lines:
             command.extend(["-a", ",".join([str(num) for num in active_lines])])
@@ -491,10 +500,13 @@ class NetworkMenu:
         selection()
 
 
-if __name__ == "__main__":
+def main():
     locale.setlocale(locale.LC_ALL, '')
     nm = NetworkMenu(None, None)
 
     nm.display_choose_device()
     nm.display_menu()
 
+
+if __name__ == "__main__":
+    main()
