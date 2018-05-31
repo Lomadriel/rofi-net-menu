@@ -28,6 +28,6 @@ setuptools.setup(
         'console_scripts': [
             'rofi-net-menu = rofinetmenu.netmenu:main'
         ]
-    }
-    # install_requires=['xdg'],
+    },
+    install_requires=['pyxdg']
 )
