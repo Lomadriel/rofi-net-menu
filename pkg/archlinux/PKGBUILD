@@ -1,0 +1,32 @@
+# Maintainer: Jérôme BOULMIER <echo amVyb21lLmJvdWxtaWVyQG91dGxvb2suZnIK | base64 -d> 
+
+pkgname=rofi-net-menu-git
+pkgver=r2.4df83fb
+pkgrel=1
+provides=("${pkgname%-git}")
+conflicts=("${pkgname%-git}")
+pkgdesc="A network (ethernet and wifi) menu powered by rofi"
+url="https://github.com/Lomadriel/${pkgname%-git}"
+arch=("any")
+license=("GPL3")
+makedepends=("git")
+depends=("python>=3" "python-xdg" "rofi")
+source=("git+https://github.com/Lomadriel/${pkgname%-git}.git")
+md5sums=("SKIP")
+
+pkgver()
+{
+  cd "${pkgname%-git}"
+  ( set -o pipefail
+    git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+package()
+{
+  msg "${pkgname%-git}"
+  cd "${pkgname%-git}"
+  msg $(pwd)
+  python setup.py install --optimize="1" --root="$pkgdir"
+}
