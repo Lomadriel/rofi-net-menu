@@ -325,6 +325,21 @@ class WifiEntriesGenerator(AbstractEntriesGenerator):
 
         return aps, active_ap_connection
 
+    def generate_bars(self, strength):
+        bars = list(u"____")
+
+        if strength > 0:
+            bars[0] = u'▂'
+        if strength > 25:
+            bars[1] = u'▄'
+        if strength > 50:
+            bars[2] = u'▆'
+        if strength > 75:
+            bars[3] = u'█'
+
+        bars = "".join(bars)
+        return bars
+
     def create_entries(self):
         aps, active_ap_connection = self.create_ap_list()
         active_ap_bssid = self.active_ap.get_bssid() if self.active_ap is not None else ""
@@ -336,7 +351,7 @@ class WifiEntriesGenerator(AbstractEntriesGenerator):
         actions = []
         active_lines = []
         for name, ap, sec in zip(aps.keys(), aps.values(), security_strs):
-            bars = NM.utils_wifi_strength_bars(ap.get_strength())
+            bars = self.generate_bars(ap.get_strength())
 
             is_active = ap.get_bssid() == active_ap_bssid
             entry_str = u"{:<{}s}  {:<{}s}  {}".format(name, max_name_leng, sec,
